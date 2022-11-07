@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Properties>
+		<Property name="log-path">PropertiesConfiguration</Property>
+	</Properties>
+	<Appenders>
+		<Console name="Console">
+			 <PatternLayout pattern="%-5level %logger{36} - %msg%n" />
+		</Console>
+		<File name="FileAppender" fileName="application-${date:yyyyMMdd}.log" immediateFlush="false" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+		</File>
+		<JDBC name="databaseAppender" tableName="schoolmanagementsystem.logging">
+			<ConnectionFactory class="jpa.logging.LogsStoreConnectionFactory" method="getConnection" />
+			<Column name="EVENT_DATE" isEventTimestamp="true" />
+			<Column name="LEVEL" pattern="%level" />
+			<Column name="LOGGER" pattern="%logger" />
+			<Column name="MSG" pattern="%message" />
+			<Column name="THROWABLE" pattern="%ex{full}" />
+		</JDBC>
+	</Appenders>
+	<Loggers>
+		<Root level="debug">
+			<AppenderRef ref="FileAppender"/>
+		</Root>
+		<Logger name="org.hibernate.SQL" level="debug" additivity="false">
+			<AppenderRef ref="FileAppender"/>
+			<AppenderRef ref="databaseAppender"/>			
+		</Logger>
+		<Logger name="org.hibernate.type.descriptor.sql" level="trace" additivity="false">
+			<AppenderRef ref="FileAppender"/>
+			<AppenderRef ref="databaseAppender"/>			
+		</Logger>
+		<Logger name="org.hibernate.stat" level="trace" additivity="false">
+			<AppenderRef ref="FileAppender"/>
+			<AppenderRef ref="databaseAppender"/>
+		</Logger>
+		<Logger name="org.hibernate.cache" level="trace" additivity="false">
+			<AppenderRef ref="FileAppender"/>
+			<AppenderRef ref="databaseAppender"/>
+		</Logger>
+		<Logger name="jpa" level="debug">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="databaseAppender"/>			
+		</Logger>
+	</Loggers>
+</Configuration>
+
